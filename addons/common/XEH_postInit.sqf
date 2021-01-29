@@ -23,6 +23,39 @@
     } call CBA_fnc_directCall;
 }] call BIS_fnc_addScriptedEventHandler;
 
+private _fnc_binaryOperator1 = {
+    params ["_args", "_code"];
+    _args params ["_targets", "_value"];
+
+    if (_targets isEqualType []) then {
+        {
+            [_x, _value] call _code;
+        } forEach (_targets select {local _x});
+    } else {
+        [_targets, _value] call _code;
+    };
+};
+
+private _fnc_binaryOperator2 = {
+    params ["_args", "_code"];
+    _args params ["_targets", "_value"];
+
+    if !(_targets isEqualType []) then {
+        _targets = [_targets];
+    };
+    {
+        [_x, _value] call _code;
+    } forEach (_targets select {local _x});
+};
+
+[QGVAR(execute), {
+    [_this, {
+        params ["_code", "_args"];
+        _args call _code;
+    }] call _fnc_binaryOperator;
+}] call CBA_fnc_addEventHandler;
+
+
 [QGVAR(execute), {
     params ["_code", "_args"];
     _args call _code;
