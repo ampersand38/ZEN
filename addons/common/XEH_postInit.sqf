@@ -23,20 +23,7 @@
     } call CBA_fnc_directCall;
 }] call BIS_fnc_addScriptedEventHandler;
 
-private _fnc_binaryOperator1 = {
-    params ["_args", "_code"];
-    _args params ["_targets", "_value"];
-
-    if (_targets isEqualType []) then {
-        {
-            [_x, _value] call _code;
-        } forEach (_targets select {local _x});
-    } else {
-        [_targets, _value] call _code;
-    };
-};
-
-private _fnc_binaryOperator2 = {
+private _fnc_binaryOperator = {
     params ["_args", "_code"];
     _args params ["_targets", "_value"];
 
@@ -44,8 +31,10 @@ private _fnc_binaryOperator2 = {
         _targets = [_targets];
     };
     {
-        [_x, _value] call _code;
-    } forEach (_targets select {local _x});
+        if (local _x) then {
+            [_x, _value] call _code;
+        };
+    } forEach _targets;
 };
 
 [QGVAR(execute), {
